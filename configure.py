@@ -446,8 +446,14 @@ if config.getCompiler() == 'GCC':
         APP_CXXFLAGS += "-Wno-cast-align "
         APP_CFLAGS += "-Wno-cast-align "
 
-    FLOAT_ABI = None;
-    EXTRA_CFLAGS = "";
+    BASE_M_FLAGS = "-mlong-calls -mthumb-interwork -mlittle-endian "
+           
+    FLOAT_ABI = "-mabi=aapcs-linux -mfloat-abi=hard "
+    AVMSHELL_LDFLAGS += "-static "
+    EXTRA_CFLAGS = "-mcpu=cortex-a5 -march=armv7-a -DTARGET_NEON -mfpu=neon-vfpv4 -mfp16-format=ieee "
+    EXTRA_CFLAGS += "-mthumb -DTARGET_THUMB2 -fno-section-anchors -D__ARM_ARCH__=7 "
+    EXTRA_CFLAGS += "-mtune=native -mcpu=native -mtpcs-frame -mtpcs-leaf-frame -mtp=auto -mtls-dialect=gnu2 "
+    '''
     if arm_fpu:
         FLOAT_ABI = "-mfloat-abi=softfp "
         EXTRA_CFLAGS = "-mfpu=vfp -march=%s " % arm_arch # compile to use hardware fpu
@@ -462,9 +468,12 @@ if config.getCompiler() == 'GCC':
         EXTRA_CFLAGS += "-mthumb -DTARGET_THUMB2 "
     if arm_thumb != False and arm_arch == "armv7-a":
         EXTRA_CFLAGS += "-mtune=cortex-a8 "
+    '''
     #if arm_arch:
         #OPT_CXXFLAGS += "-march=%s " % arm_arch
         #DEBUG_CXXFLAGS += "-march=%s " % arm_arch
+    if BASE_M_FLAGS != None:
+        APP_CXXFLAGS += BASE_M_FLAGS
     if EXTRA_CFLAGS != None:
         APP_CXXFLAGS += EXTRA_CFLAGS
         APP_CFLAGS += EXTRA_CFLAGS
@@ -473,6 +482,8 @@ if config.getCompiler() == 'GCC':
         APP_CFLAGS += FLOAT_ABI
         AVMSHELL_LDFLAGS += FLOAT_ABI
 
+    APP_CPPFLAGS += "-DAVMPLUS_UNIX -DUNIX -Dlinux -DUSE_PTHREAD_MUTEX -DGTEST_USE_OWN_TR1_TUPLE=1 -DHAVE_STDARG -DAVMPLUS_ARM "
+    
     if config.getDebug():
         APP_CXXFLAGS += ""
     else:
