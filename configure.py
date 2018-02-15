@@ -134,7 +134,8 @@ def _setGCCVersionedFlags(FLAGS, MAJOR_VERSION, MINOR_VERSION, current_cpu, clan
             FLAGS += "-Werror -Wempty-body -Wno-logical-op -Wmissing-field-initializers -Wstrict-aliasing=3 -Wno-array-bounds -Wno-clobbered -Wstrict-overflow=0 -funit-at-a-time  "
             if (MAJOR_VERSION == 4 and MINOR_VERSION == 6): # 4.6
                 FLAGS += "-Wno-psabi -Wno-unused-variable -Wno-unused-but-set-variable "
-
+            if (MAJOR_VERSION == 4 and MINOR_VERSION >= 8): # 4.8 and later
+                FLAGS += "-Wno-psabi -Wno-unused-variable -Wno-unused-but-set-variable -Wno-unused-local-typedefs -Wno-sizeof-pointer-memaccess -Wno-narrowing -Wno-conversion-null -Wno-maybe-uninitialized "
     return FLAGS
 
 def getLlvmFlags(llvm_config_flags, llvm_dir):
